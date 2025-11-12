@@ -17,7 +17,17 @@ conn_engine = create_engine(conn_string)
 
 # === ETL Button ===
 if st.button("Run ETL Process"):
+### Load the data ###
     df = pd.read_csv(r"D:\data_sources\netflix\netflix_titles.csv")
+    st.success("Loading process is complete.")
+### Transform the data ###
+    df=pd.DataFrame(df)
+    df = df.drop_duplicates()
+    df['cast'] = df['cast'].fillna ('unknown')
+    df['director'] = df['director'].fillna ('unknown')
+    st.success("Data is transformed in correct format.")
+
+### Load the table to MYSQL database ###
     df.to_sql(name='netflix', con=conn_engine, index=False, if_exists='replace')
     st.success("✅ ETL Completed! Table 'Netflix' created in MySQL.")
 
